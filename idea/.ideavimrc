@@ -1,0 +1,39 @@
+
+
+let mapleader=" "
+
+set scrolloff=8
+set clipboard=autoselect
+set incsearch
+
+
+map <S-l> <Action>(NextTab)
+map <S-h> <Action>(PreviousTab)
+map <S-q> <Action>(CloseContent)
+map <leader>h :nohlsearch<CR>
+vmap < <Action>(EditorUnindentLineOrSelection)
+vmap > <Action>(EditorIndentLineOrSelection)
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+nnoremap n nzzzv
+nnoremap N Nzzzv
+vmap J <Action>(MoveLineDown)
+vmap K <Action>(MoveLineUp)
+
+map <leader>e <Action>(ActivateProjectToolWindow)
+
+map <leader>ff <Action>(GotoFile)
+map <leader>fp <Action>(RecentFiles)
+map <leader>ft <Action>(FindInPath)
+
+map <leader>gg <Action>(ActivateVersionControlToolWindow)
+
+map <leader>/ <Action>(CommentByLineComment)
+xmap <leader>/ <Action>(CommentByLineComment)
+
+map <leader>lr <Action>(RenameElement)
+map <leader>lf <Action>(ReformatCode)
+map <leader>la <Action>(ShowIntentionActions)
+map <leader>lj <Action>(GotoNextError)
+map <leader>lk <Action>(GotoPreviousError)
+map <leader>ls <Action>(ParameterInfo)

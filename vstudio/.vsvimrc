@@ -1,0 +1,51 @@
+set backspace=2
+set clipboard=autoselect
+set scrolloff=8
+
+let mapleader=" "
+
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+
+nnoremap n nzz
+nnoremap N Nzz
+
+nnoremap <S-l> :vsc Window.NextTab<CR>
+nnoremap <S-h> :vsc Window.PreviousTab<CR>
+
+nnoremap <leader>s :vsc Edit.Replace<CR>
+nnoremap <leader>e :vsc View.SolutionExplorer<CR>
+nnoremap <leader>gg :vsc View.GitWindow<CR>
+
+nnoremap <leader>/ :vsc Edit.ToggleLineComment<CR>
+xnoremap <leader>/ :vsc Edit.ToggleBlockComment<CR>
+
+vnoremap J :vsc Edit.MoveSelectedLinesDown<CR>
+vnoremap K :vsc Edit.MoveSelectedLinesUp<CR>
+
+vnoremap < <gv
+vnoremap > >gv
+
+nnoremap K :vsc Edit.QuickInfo<CR>
+
+nnoremap <leader>lf :vsc Edit.FormatDocument<CR>
+xnoremap <leader>lf :vsc Edit.FormatSelection<CR>
+nnoremap <leader>lr :vsc Refactor.Rename<CR>
+nnoremap <leader>la :vsc View.QuickActions<CR> 
+nnoremap <leader>lk :vsc View.NextError<CR>
+nnoremap <leader>lj :vsc View.PreviousError<CR>
+nnoremap <leader>ls :vsc Edit.ParameterInfo<CR>
+
+nnoremap gr :vsc Edit.FindAllReferences<CR> 
+nnoremap gI :vsc Edit.GoToImplementation<CR>
+nnoremap gD :vsc Edit.PeekDefinition<CR>
+
+nnoremap <leader>db :vsc Debug.ToggleBreakpoint<CR>
+
+nnoremap <leader>di :vsc Debug.StepInto<CR>
+nnoremap <leader>do :vsc Debug.StepOver<CR>
+nnoremap <leader>dO :vsc Debug.StepOut<CR>
+
+
+
+nnoremap <leader>dt :vsc Debug.TerminateAll<CR>
