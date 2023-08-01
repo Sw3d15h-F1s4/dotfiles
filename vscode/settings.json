@@ -1,9 +1,4 @@
-{
-    "vscode-neovim.neovimExecutablePaths.win32": "C:\\Program Files\\Neovim\\bin\\nvim.exe",
-    "extensions.experimental.affinity": {
-        "asvetliakov.vscode-neovim": 1
-    },
-    "vscode-neovim.neovimInitVimPaths.win32": "C:\\Users\\samjt\\.dotfiles\\vscode\\init.lua",
+{,
     "search.collapseResults": "auto",
     "search.smartCase": true,
     "workbench.editor.splitInGroupLayout": "vertical",
