@@ -22,7 +22,7 @@ function M.config()
     close_on_exit = true,
     shell = vim.o.shell,
     float_opts = {
-      border = "curved",
+      border = "none",
     },
     highlights = require('rose-pine.plugins.toggleterm')
   }

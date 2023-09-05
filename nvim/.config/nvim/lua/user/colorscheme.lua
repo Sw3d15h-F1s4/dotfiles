@@ -8,9 +8,9 @@ M.name = "rose-pine"
 function M.config()
   require("rose-pine").setup({
     variant = 'main',
-    dim_nc_background = false,
+    dim_nc_background = true,
     disable_italics = true,
-    disable_background = true
+    disable_background = false
   })
 
 

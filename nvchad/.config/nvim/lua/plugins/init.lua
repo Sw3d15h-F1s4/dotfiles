@@ -185,6 +185,7 @@ local default_plugins = {
                 "hrsh7th/cmp-nvim-lsp",
                 "hrsh7th/cmp-buffer",
                 "hrsh7th/cmp-path",
+                "hrsh7th/cmp-cmdline"
             },
         },
         opts = function()
@@ -231,7 +232,10 @@ local default_plugins = {
 
     {
         "nvim-telescope/telescope.nvim",
-        dependencies = "nvim-treesitter/nvim-treesitter",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+        },
         cmd = "Telescope",
         init = function()
             require("core.utils").load_mappings "telescope"
@@ -240,6 +244,7 @@ local default_plugins = {
             return require "plugins.configs.telescope"
         end,
         config = function(_, opts)
+            require('telescope').load_extension('fzf')
             dofile(vim.g.base46_cache .. "telescope")
             local telescope = require "telescope"
             telescope.setup(opts)
@@ -272,6 +277,15 @@ local default_plugins = {
             require("better_escape").setup()
         end,
     },
+    {
+        "RRethy/vim-illuminate",
+        event = "BufRead",
+        config = function()
+             require("illuminate").configure({
+                min_count_to_highlight = 2,
+            })
+        end
+    }
 
 
 }
