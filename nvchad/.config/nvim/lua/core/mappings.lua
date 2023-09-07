@@ -42,10 +42,10 @@ M.general = {
         -- http://www.reddit.com/r/vim/comments/2k4cbr/problem_with_gj_and_gk/
         -- empty mode is same as using <cmd> :map
         -- also don't use g[j|k] when in operator pending mode, so it doesn't alter d, y or c behaviour
-        ["j"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
-        ["k"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true } },
-        ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true } },
-        ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
+        -- ["j"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
+        -- ["k"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true } },
+        -- ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true } },
+        -- ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
 
         -- new buffer
         ["<leader>b"] = { "<cmd> enew <CR>", "New buffer" },
@@ -57,6 +57,11 @@ M.general = {
             end,
             "LSP formatting",
         },
+        ["<C-Right>"] = { "<cmd> vertical resize +2<CR>", "Widen Window"},
+        ["<C-Left>"] = { "<cmd> vertical resize -2<CR>", "Narrow Window"},
+        ["<C-Down>"] = { "<cmd> resize +2<CR>", "Taller Window"},
+        ["<C-Up>"] = { "<cmd> resize -2<CR>", "Shorten Window"}
+
     },
 
     t = {
@@ -64,16 +69,16 @@ M.general = {
     },
 
     v = {
-        ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true} },
-        ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
-
-        ["J"] = { ":m '>+1<CR>gv=gv", "Move lines up", opts = { silent = true } },
+        -- ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true} },
+        -- ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
         ["K"] = { ":m '>-2<CR>gv=gv", "Move lines down", opts = { silent = true } },
+        ["J"] = { ":m '>+1<CR>gv=gv", "Move lines up", opts = { silent = true } },
+
     },
 
     x = {
-        ["j"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true} },
-        ["k"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true} },
+        -- ["j"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true} },
+        -- ["k"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true} },
         -- Don't copy the replaced text after pasting in visual mode
         -- https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text#Alternative_mapping_for_paste
         ["p"] = { 'p:let @+=@0<CR>:let @"=@0<CR>', "Dont copy replaced text", opts = { silent = true } },
