@@ -50,7 +50,7 @@ local options = {
         },
     },
 
-    extensions_list = { "themes", "terms", "fzf", "ui-select" },
+    extensions_list = { "themes", "terms", "fzf"},
 }
 
 return options

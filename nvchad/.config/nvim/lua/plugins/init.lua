@@ -235,7 +235,6 @@ local default_plugins = {
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
             { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
-            'nvim-telescope/telescope-ui-select.nvim'
         },
         cmd = "Telescope",
         event = "BufRead",
@@ -286,6 +285,20 @@ local default_plugins = {
                 min_count_to_highlight = 2,
             })
         end
+    },
+    {
+        "folke/noice.nvim",
+        event = "VeryLazy",
+        opts = function()
+            return require "plugins.configs.others".noice
+        end,
+        config = function(_, opts)
+            require("noice").setup(opts)
+        end,
+        dependencies = {
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify"
+        }
     }
 
 

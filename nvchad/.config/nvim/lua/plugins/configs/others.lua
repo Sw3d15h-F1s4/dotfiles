@@ -63,4 +63,46 @@ M.gitsigns = {
     end,
 }
 
+M.noice = {
+    lsp = {
+        override = {
+            ['vim.lsp.util.convert_signature_help_to_markdown_lines'] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true,
+        },
+        signature = {
+            enabled = false,
+        },
+        hover = {
+            enabled = false,
+        }
+    },
+    presets = {
+        bottom_search = true,
+        command_palette = true,
+        long_message_to_split = true,
+        inc_rename = false,
+        lsp_doc_border = false,
+    },
+    cmdline = {
+        enabled = true,
+    },
+    messages = {
+        enabled = true,
+    },
+    views = {
+        cmdline_popup = {
+            border = {
+                style = "none",
+                padding = { 2, 3 },
+            },
+            filter_options = {},
+            win_options = {
+                winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+            }
+        }
+    }
+
+}
+
 return M
