@@ -71,9 +71,9 @@ M.general = {
     v = {
         -- ["<Up>"] = { 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', "Move up", opts = { expr = true, silent = true} },
         -- ["<Down>"] = { 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', "Move down", opts = { expr = true, silent = true } },
+
         ["K"] = { ":m '>-2<CR>gv=gv", "Move lines down", opts = { silent = true } },
         ["J"] = { ":m '>+1<CR>gv=gv", "Move lines up", opts = { silent = true } },
-
     },
 
     x = {
@@ -461,6 +461,13 @@ M.gitsigns = {
             "Toggle deleted",
         },
     },
+}
+
+M.vim_jukit = {
+    plugin = true,
+    n ={
+        
+    }
 }
 
 -- M.disabled = {

@@ -299,6 +299,18 @@ local default_plugins = {
             "MunifTanjim/nui.nvim",
             "rcarriga/nvim-notify"
         }
+    },
+    {
+        "luk400/vim-jukit",
+        event = "BufEnter *.ipynb",
+        init = function()
+            require("core.utils").load_mappings "vim_jukit"
+            -- vim.g.jukit_mappings = 0
+            vim.g.jukit_mappings_ext_enabled = {"py", "ipynb"}
+            vim.g.jukit_convert_open_defualt = 0
+        end,
+        config = function()
+        end
     }
 
 
