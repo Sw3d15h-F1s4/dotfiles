@@ -466,7 +466,21 @@ M.gitsigns = {
 M.vim_jukit = {
     plugin = true,
     n ={
+        -- vim-jukit splits
+        ["<leader>jso"] = {function() vim.cmd("call jukit#splits#output()") end, "Open Output"},
+        ["<leader>jst"] = {function() vim.cmd("call jukit#splits#term()") end, "Open Terminal"},
+        ["<leader>jsh"] = {function() vim.cmd("call jukit#splits#history()") end, "Open History"},
+        ["<leader>jsa"] = {function() vim.cmd("call jukit#splits#output_and_history()") end, "Open Both Splits"},
+        ["<leader>jsch"] = {function() vim.cmd("call jukit#splits#close_history()") end, "Close History"},
+        ["<leader>jsco"] = {function() vim.cmd("call jukit#splits#close_output_split()") end, "Close Output"},
+        ["<leader>jsca"] = {function() vim.cmd("call jukit#splits#close_output_and_history(1)") end, "Close Both Splits"},
+        ["<leader>jsoc"] = {function() vim.cmd("call jukit#splits#show_last_cell_output(1)") end, ""},
+        -- not implemented:
+        --  scroll
+        --  auto hist toggle
+        --  set layout
         
+
     }
 }
 
