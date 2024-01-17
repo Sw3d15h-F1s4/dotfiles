@@ -11,7 +11,21 @@ g.transparency = config.ui.transparency
 opt.laststatus = 3 -- global statusline
 opt.showmode = false
 
-opt.clipboard = "unnamed"
+-- opt.clipboard = "unnamed"
+if (vim.loop.os_uname().machine == "aarch64") then
+    g.clipboard = {
+        name = "void",
+        copy = {
+            ['+'] = true,
+            ['*'] = true,
+        },
+        paste = {
+            ['+'] = {},
+            ['*'] = {},
+        },
+    }
+    g.ANDROID = true
+end
 opt.cursorline = true
 
 -- Indenting

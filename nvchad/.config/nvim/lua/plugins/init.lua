@@ -139,6 +139,7 @@ local default_plugins = {
 
     {
         "neovim/nvim-lspconfig",
+        dependencies = {"folke/trouble.nvim"},
         init = function()
             require("core.utils").lazy_load "nvim-lspconfig"
         end,
@@ -305,12 +306,37 @@ local default_plugins = {
         event = "BufEnter *.ipynb",
         init = function()
             require("core.utils").load_mappings "vim_jukit"
-            -- vim.g.jukit_mappings = 0
-            vim.g.jukit_mappings_ext_enabled = {"py", "ipynb"}
+            vim.g.jukit_mappings = 0
+            -- vim.g.jukit_mappings_ext_enabled = {"py", "ipynb"}
             vim.g.jukit_convert_open_defualt = 0
         end,
         config = function()
         end
+    },
+    {
+        "jbyuki/nabla.nvim",
+        event = "BufRead",
+        init = function()
+            require("core.utils").load_mappings "nabla"
+        end,
+    },
+    {
+        "ellisonleao/glow.nvim",
+        opts = function()
+            return require "plugins.configs.others".glow
+        end,
+        config = function(_, opts)
+            require('glow').setup(opts)
+        end,
+        cmd = "Glow",
+    },
+    {
+        "folke/trouble.nvim",
+        cmd = {"Trouble", "TroubleToggle"},
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = function()
+            return require "plugins.configs.trouble"
+        end,
     }
 
 

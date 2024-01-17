@@ -148,12 +148,8 @@ M.lspconfig = {
             "LSP declaration",
         },
 
-        ["gd"] = {
-            function()
-                vim.lsp.buf.definition()
-            end,
-            "LSP definition",
-        },
+        ["gr"] = {function() vim.cmd("TroubleToggle lsp_references") end, "Peek References"},
+        ["gd"] = {function() vim.cmd("TroubleToggle lsp_definitions") end, "Peek Definitions"},
 
         ["K"] = {
             function()
@@ -195,13 +191,6 @@ M.lspconfig = {
                 vim.lsp.buf.code_action()
             end,
             "LSP code action",
-        },
-
-        ["gr"] = {
-            function()
-                vim.lsp.buf.references()
-            end,
-            "LSP references",
         },
 
         ["gl"] = {
@@ -479,8 +468,51 @@ M.vim_jukit = {
         --  scroll
         --  auto hist toggle
         --  set layout
-        
 
+        -- vim-jukit sending code
+        ["<leader>jxc"] = {function() vim.cmd("call jukit#send#section(0)") end, "Execute Cell"},
+        ["<leader>jxa"] = {function() vim.cmd("call jukit#send#all()") end, "Execute All Cells"},
+        ["<leader>xt"] = {function() vim.cmd("call jukit#send#until_current_section()") end, "Execute All Cells"},
+        -- not implemented:
+        --  execute current line (why the fuck)
+
+        -- vim-jukit cell manipulation
+        ["<leader>jco"] = {function() vim.cmd("call jukit#cells#create_below(0)") end, "Create Code Cell Below"},
+        ["<leader>jcO"] = {function() vim.cmd("call jukit#cells#create_above(0)") end, "Create Code Cell Above"},
+        ["<leader>jct"] = {function() vim.cmd("call jukit#cells#create_below(1)") end, "Create Text Cell Below"},
+        ["<leader>jcT"] = {function() vim.cmd("call jukit#cells#create_above(1)") end, "Create Text Cell Above"},
+        ["<leader>jcd"] = {function() vim.cmd("call jukit#cells#delete()") end, "Delete Cell"},
+        ["<leader>jcs"] = {function() vim.cmd("call jukit#cells#split()") end, "Split Cell"},
+        ["<leader>jcm"] = {function() vim.cmd("call jukit#cells#merge_below()") end, "Merge Cell Below"},
+        ["<leader>jcM"] = {function() vim.cmd("call jukit#cells#merge_above()") end, "Merge Cell Above"},
+        ["<leader>jcj"] = {function() vim.cmd("call jukit#cells#move_down()") end, "Move Cell Down"},
+        ["<leader>jck"] = {function() vim.cmd("call jukit#cells#move_up()") end, "Move Cell Up"},
+        ["<leader>jod"] = {function() vim.cmd("call jukit#cells#delete_outputs(0)") end, "Delete Current Cell Output"},
+        ["<leader>jad"] = {function() vim.cmd("call jukit#cells#delete_outputs(1)") end, "Delete All Cell Output"},
+        -- not implemented:
+        --   jump to next/prev cell
+
+        -- vim-jukit ipynb conversion
+        ["<leader>jnp"] = {function() vim.cmd("call jukit#convert#notebook_convert(\"jupyter-notebook\")") end, "Convert Notebook"},
+
+    },
+    v = {
+        ["<leader>jxs"] = {function() vim.cmd("call jukit#send#selection()") end, "Execute Selection"}
+    }
+}
+
+M.nabla = {
+    plugin = true,
+    n = {
+        ["<leader>p"] = {function() require("nabla").popup() end, "Render TeX"},
+    }
+}
+
+M.trouble = {
+    plugin = true,
+    n = {
+        ["<leader>ld"] = {function() vim.cmd("TroubleToggle document_diagnostics") end, "Open Diagnostics"},
+        ["<leader>lw"] = {function() vim.cmd("TroubleToggle workspace_diagnostics") end, "Open Workspace Diagnostics"},
     }
 }
 

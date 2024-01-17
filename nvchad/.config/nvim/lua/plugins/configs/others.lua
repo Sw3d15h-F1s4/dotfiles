@@ -102,7 +102,11 @@ M.noice = {
             }
         }
     }
+}
 
+M.glow = {
+    glow_path = (vim.g.ANDROID == true) and ("/data/data/com.termux/files/usr/bin/glow") or "",
+    -- install_path = "",
 }
 
 return M
