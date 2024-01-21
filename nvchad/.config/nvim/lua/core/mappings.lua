@@ -463,7 +463,7 @@ M.vim_jukit = {
         ["<leader>jsch"] = {function() vim.cmd("call jukit#splits#close_history()") end, "Close History"},
         ["<leader>jsco"] = {function() vim.cmd("call jukit#splits#close_output_split()") end, "Close Output"},
         ["<leader>jsca"] = {function() vim.cmd("call jukit#splits#close_output_and_history(1)") end, "Close Both Splits"},
-        ["<leader>jsoc"] = {function() vim.cmd("call jukit#splits#show_last_cell_output(1)") end, ""},
+        ["<leader>jch"] = {function() vim.cmd("call jukit#splits#show_last_cell_output(1)") end, "Show last cell output"},
         -- not implemented:
         --  scroll
         --  auto hist toggle
