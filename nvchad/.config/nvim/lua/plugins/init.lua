@@ -120,20 +120,23 @@ local default_plugins = {
     -- lsp stuff
     {
         "williamboman/mason.nvim",
-        cmd = { "Mason", "MasonInstall", "MasonInstallAll", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
+        event = "VeryLazy",
+        dependencies = {"williamboman/mason-lspconfig.nvim"},
         opts = function()
             return require "plugins.configs.mason"
         end,
         config = function(_, opts)
             dofile(vim.g.base46_cache .. "mason")
             require("mason").setup(opts)
+            require("mason-lspconfig").setup()
 
-            -- custom nvchad cmd to install all mason binaries listed
-            vim.api.nvim_create_user_command("MasonInstallAll", function()
-                vim.cmd("MasonInstall " .. table.concat(opts.ensure_installed, " "))
-            end, {})
-
-            vim.g.mason_binaries_list = opts.ensure_installed
+            require("mason-lspconfig").setup_handlers {
+                function (server_name)
+                    require("lspconfig")[server_name].setup {}
+                end,
+                ["clangd"] = function() end,
+                ["lua_ls"] = function() end,
+            }
         end,
     },
 
@@ -298,7 +301,12 @@ local default_plugins = {
         end,
         dependencies = {
             "MunifTanjim/nui.nvim",
-            "rcarriga/nvim-notify"
+            {
+                "rcarriga/nvim-notify",
+                config = function()
+                    dofile(vim.g.base46_cache .. "notify")
+                end
+            }
         }
     },
     {
@@ -334,9 +342,16 @@ local default_plugins = {
         "folke/trouble.nvim",
         cmd = {"Trouble", "TroubleToggle"},
         dependencies = { "nvim-tree/nvim-web-devicons" },
+        init = function()
+            require("core.utils").load_mappings "trouble"
+        end,
         opts = function()
             return require "plugins.configs.trouble"
         end,
+        config = function()
+            dofile(vim.g.base46_cache .. "trouble")
+            require("trouble").setup()
+        end
     }
 
 

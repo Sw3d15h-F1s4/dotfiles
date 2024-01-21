@@ -18,7 +18,10 @@ M.ui = {
     lsp_semantic_tokens = false, -- needs nvim v0.9, just adds highlight groups for lsp semantic tokens
 
     -- https://github.com/NvChad/base46/tree/v2.0/lua/base46/extended_integrations
-    extended_integrations = {}, -- these aren't compiled by default, ex: "alpha", "notify"
+    extended_integrations = {
+        "notify",
+        "trouble"
+    }, -- these aren't compiled by default, ex: "alpha", "notify"
 
     -- cmp themeing
     cmp = {

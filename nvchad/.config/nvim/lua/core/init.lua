@@ -68,6 +68,11 @@ vim.opt.wrap = false
 
 g.mapleader = " "
 
+
+-- funny LSP hover fix!
+vim.cmd("command -nargs=+ LspHover lua vim.lsp.buf.hover()")
+vim.cmd("set keywordprg=:LspHover")
+
 -- disable some default providers
 for _, provider in ipairs { "node", "perl","ruby" } do
     vim.g["loaded_" .. provider .. "_provider"] = 0
