@@ -414,9 +414,9 @@ require('lazy').setup({
       require('mason').setup()
       local ensure_installed = vim.tbl_keys(servers or {})
 
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       if not vim.g.ANDROID then -- Check if works on NixOS with nix-ld and nix-alien
+        require('mason-tool-installer').setup { ensure_installed = ensure_installed }
         require('mason-lspconfig').setup {
           handlers = {
             function(server_name)
