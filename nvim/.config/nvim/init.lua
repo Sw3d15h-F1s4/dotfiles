@@ -349,6 +349,11 @@ require('lazy').setup({
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
       { 'folke/neodev.nvim', opts = {} },
+
+      -- Let's try Mason again. Won't work on Android, but whatever.
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
     },
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -397,20 +402,42 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
-              diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                disable = { 'missing-fields' },
+                globals = { 'vim' },
+              },
             },
           },
         },
       }
 
-      local setup_server = function(server_name)
-        local server = servers[server_name]
-        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-        require('lspconfig')[server_name].setup(server)
+      require('mason').setup()
+      local ensure_installed = vim.tbl_keys(servers or {})
+
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      if not vim.g.ANDROID then -- Check if works on NixOS with nix-ld and nix-alien
+        require('mason-lspconfig').setup {
+          handlers = {
+            function(server_name)
+              local server = servers[server_name] or {}
+              server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+              require('lspconfig')[server_name].setup(server)
+            end,
+          },
+        }
       end
 
-      setup_server('lua_ls')
-      setup_server('clangd')
+      if vim.g.ANDROID then -- if we are on android, then mason's binaries don't work
+        local setup_server = function(server_name)
+          local server = servers[server_name]
+          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+          require('lspconfig')[server_name].setup(server)
+        end
+
+        setup_server('lua_ls')
+        setup_server('clangd')
+      end
     end,
   },
 
@@ -594,6 +621,17 @@ require('lazy').setup({
     },
   },
 })
+
+
+-- lua-language-server root directory detection is kinda funky on windows.
+-- seems that by default, will only find when directory has a .stylua.toml file
+-- even tho i dont use stylua.
+if vim.loop.os_uname().sysname == "Windows_NT" then
+  local configpath = vim.fn.stdpath 'config' .. '/.stylua.toml'
+  if not vim.loop.fs_stat(configpath) then
+   os.execute('type nul > ' .. configpath)
+  end
+end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
