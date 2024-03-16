@@ -189,6 +189,14 @@ require('lazy').setup({
       vim.keymap.set('n', '<S-h>', '<cmd>BufferLineCyclePrev<CR>')
     end,
   },
+
+  {
+    'famiu/bufdelete.nvim',
+    keys = {
+      {"Q", "<cmd> Bdelete! <CR>", desc = "[Q] Close Buffer"}
+    },
+  },
+
   {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
@@ -560,7 +568,8 @@ require('lazy').setup({
     config = function(_, opts)
       require('toggleterm').setup(opts)
 
-    vim.keymap.set('n', '<leader>tt', '<cmd> ToggleTerm direction=float <CR>', {silent=true, desc = '[T]oggle [T]erm'})
+    vim.keymap.set('n', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', {silent=true, desc = '[T]oggle [T]erm'})
+    vim.keymap.set('t', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', {silent=true, desc = '[T]oggle [T]erm'})
     end,
   },
 
