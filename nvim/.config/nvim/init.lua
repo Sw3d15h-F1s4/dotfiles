@@ -65,10 +65,12 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 8
+vim.opt.sidescroll = 8
 
 vim.opt.wrap = false
 vim.opt.incsearch = true
 vim.opt.termguicolors = true
+vim.opt.colorcolumn = "80"
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
