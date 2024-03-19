@@ -6,10 +6,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 
-
--- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = true
-
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 
@@ -23,11 +19,25 @@ vim.opt.mouse = 'a'
 vim.opt.showmode = false
 
 -- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
+-- Completely disable clipboard sync on Android
+-- termux-clipboard takes ~ 3 seconds per request.
+-- plus you can just highlight copy/paste in termux, press i and tap/hold
 
 if (vim.g.ANDROID ~= true) then
   vim.opt.clipboard = 'unnamedplus'
+else
+  vim.g.clipboard = {
+    name = 'disable-clipboard',
+    copy = {
+      ['+'] = true,
+      ['*'] = true,
+    },
+    paste = {
+      ['+'] = true,
+      ['*'] = true,
+    },
+    cache_enabled = 1,
+  }
 end
 
 -- Enable break indent
@@ -82,8 +92,8 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
-vim.keymap.set('n', '<leader>le', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>lq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>de', vim.diagnostic.open_float, { desc = '[D]iagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = '[D]iagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -104,8 +114,8 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'n', 'nzzzv')
 vim.keymap.set('n', 'N', 'Nzzzv')
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", {silent = true})
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", {silent = true})
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { silent = true })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { silent = true })
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
@@ -162,8 +172,8 @@ require('lazy').setup({
     config = function(_, opts)
       require('nvim-tree').setup(opts)
 
-      vim.keymap.set('n', '<C-n>', '<cmd> NvimTreeToggle <CR>')
-      vim.keymap.set('n', '<leader>e', '<cmd> NvimTreeFocus <CR>')
+      vim.keymap.set('n', '<C-n>', '<cmd> NvimTreeToggle <CR>', {desc = 'Toggle Nvim-Tree'})
+      vim.keymap.set('n', '<leader>e', '<cmd> NvimTreeFocus <CR>', {desc = "[E] Focus Nvim-Tree"})
     end,
   },
 
@@ -179,6 +189,7 @@ require('lazy').setup({
             separator = true,
           }
         },
+        ---@diagnostic disable-next-line unused-local
         custom_filter = function(buf_number, buf_numbers)
           if vim.bo[buf_number].filetype ~= "NvimTree" then return true end
         end,
@@ -195,7 +206,7 @@ require('lazy').setup({
   {
     'famiu/bufdelete.nvim',
     keys = {
-      {"Q", "<cmd> Bdelete! <CR>", desc = "[Q] Close Buffer"}
+      { "Q", "<cmd> Bdelete! <CR>", desc = "[Q] Close Buffer" }
     },
   },
 
@@ -224,7 +235,6 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-
         local map = function(mode, lhs, rhs, desc)
           vim.keymap.set(mode, lhs, rhs, { desc = desc, buffer = bufnr, silent = true })
         end
@@ -235,21 +245,20 @@ require('lazy').setup({
             vim.schedule(function() require('gitsigns').next_hunk() end)
             return "<Ignore>"
           end,
-        "Move to next Git hunk")
+          "Move to next Git hunk")
 
         map("n", "[c",
           function()
             if vim.wo.diff then return "[c" end
             vim.schedule(function() require('gitsigns').prev_hunk() end)
             return "<Ignore>"
-        end,
-        "Move to prev Git hunk")
+          end,
+          "Move to prev Git hunk")
 
-        map("n", "<leader>rh", require('gitsigns').reset_hunk, "Reset Hunk")
-        map("n", "<leader>ph", require('gitsigns').preview_hunk, "Preview Hunk")
-        map("n", "<leader>gb", package.loaded.gitsigns.blame_line, "Preview Hunk")
-        map("n", "<leader>td", require('gitsigns').toggle_deleted, "Toggle DeleteToggle Deleted")
-
+        map("n", "<leader>gr", require('gitsigns').reset_hunk, "[G]it [R]eset Hunk")
+        map("n", "<leader>gp", require('gitsigns').preview_hunk, "[G]it [P]review Hunk")
+        map("n", "<leader>gb", package.loaded.gitsigns.blame_line, "[G]it [B]lame")
+        map("n", "<leader>gt", require('gitsigns').toggle_deleted, "[G]it [T]oggle Delted")
       end
     },
   },
@@ -267,7 +276,7 @@ require('lazy').setup({
         ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
         ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
         ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>l'] = { name = '[L]SP Binds', _ = 'which_key_ignore' },
+        ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -282,7 +291,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons' },
     },
     config = function()
       -- [[ Configure Telescope ]]
@@ -314,7 +323,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader>sg', builtin.git_status, { desc = '[S]how [G]it Status' })
       vim.keymap.set('n', '<leader>sc', builtin.git_status, { desc = '[S]earch [C]ommits' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch [B]uffers' })
@@ -537,11 +545,14 @@ require('lazy').setup({
     config = function(_, opts)
       require('trouble').setup(opts)
 
-      vim.keymap.set('n', '<leader>dd', function() require('trouble').toggle('document_diagnostics') end, {silent = true, desc = "[D]ocument [D]iagnostics"})
-      vim.keymap.set('n', '<leader>wd', function() require('trouble').toggle('workspace_diagnostics') end, {silent = true, desc = "[W]orkspace [D]iagnostics"})
-      vim.keymap.set('n', '<leader>q', function() require('trouble').toggle('quickfix') end, {silent = true, desc = "[Q]uickfix"})
-      vim.keymap.set('n', '<leader>ll', function() require('trouble').toggle('quickfix') end, {silent = true, desc = "[L]ocation [L]ist"})
-      vim.keymap.set('n', 'gr', function() require('trouble').toggle('lsp_references') end, {silent = true, desc = "[G]oto [R]eferences"})
+      vim.keymap.set('n', '<leader>dd', function() require('trouble').toggle('document_diagnostics') end,
+        { silent = true, desc = "[D]ocument [D]iagnostics" })
+      vim.keymap.set('n', '<leader>wd', function() require('trouble').toggle('workspace_diagnostics') end,
+        { silent = true, desc = "[W]orkspace [D]iagnostics" })
+      vim.keymap.set('n', '<leader>q', function() require('trouble').toggle('quickfix') end,
+        { silent = true, desc = "[Q]uickfix" })
+      vim.keymap.set('n', 'gr', function() require('trouble').toggle('lsp_references') end,
+        { silent = true, desc = "[G]oto [R]eferences" })
     end,
   },
 
@@ -556,13 +567,12 @@ require('lazy').setup({
       require('mini.surround').setup()
 
       local statusline = require 'mini.statusline'
-      statusline.setup({ use_icons = vim.g.have_nerd_font })
+      statusline.setup({ use_icons = true })
 
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
     end,
   },
 
@@ -575,9 +585,17 @@ require('lazy').setup({
       auto_install = true,
       highlight = { enable = true },
       indent = { enable = true },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = "gnn",
+          node_incremental = "grn",
+          scope_incremental = "grc",
+          node_decremental = "grm",
+        }
+      }
     },
     config = function(_, opts)
-
       require('nvim-treesitter.configs').setup(opts)
 
       -- There are additional nvim-treesitter modules that you can use to interact
@@ -597,33 +615,84 @@ require('lazy').setup({
     config = function(_, opts)
       require('toggleterm').setup(opts)
 
-    vim.keymap.set('n', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', {silent=true, desc = '[T]oggle [T]erm'})
-    vim.keymap.set('t', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', {silent=true, desc = '[T]oggle [T]erm'})
+      local Terminal  = require('toggleterm.terminal').Terminal
+      local lazygit = Terminal:new({ cmd = "lazygit", hidden = true, direction = 'float' })
+
+      local function _lazygit_toggle()
+        lazygit:toggle()
+      end
+
+      vim.keymap.set("n", "<leader>gs", _lazygit_toggle, {noremap = true, silent = true, desc = '[G]it [S]tatus'})
+
+      vim.keymap.set('n', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', { silent = true, desc = '[T]oggle [T]erm' })
+      vim.keymap.set('t', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', { silent = true, desc = '[T]oggle [T]erm' })
     end,
   },
 
-}, {
-  ui = {
-    -- If you have a Nerd Font, set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
+  {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+      'williamboman/mason.nvim',
+      'jay-babu/mason-nvim-dap.nvim',
+      'nvim-neotest/nvim-nio',
     },
+    config = function()
+      local dap = require 'dap'
+      local dapui = require 'dapui'
+
+      require('mason-nvim-dap').setup {
+        automatic_setup = true,
+
+        handlers = {},
+      }
+
+      vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
+      vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
+      vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
+      vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
+      vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+      vim.keymap.set('n', '<leader>B', function() dap.set_breakpoint(vim.fn.input 'Breakpoint Condition: ') end,
+        { desc = 'Debug: Set Breakpoint' })
+
+      dapui.setup {
+        layouts = { {
+          elements = { {
+            id = "scopes",
+            size = 0.25
+          }, {
+            id = "breakpoints",
+            size = 0.25
+          }, {
+            id = "stacks",
+            size = 0.25
+          }, {
+            id = "watches",
+            size = 0.25
+          } },
+          position = "right",
+          size = 40
+        }, {
+          elements = { {
+            id = "repl",
+            size = 0.5
+          }, {
+            id = "console",
+            size = 0.5
+          } },
+          position = "bottom",
+          size = 10
+        } },
+      }
+
+      vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
+
+      dap.listeners.after.event_initialized['dapui_config'] = dapui.open
+      dap.listeners.before.event_terminated['dapui_config'] = dapui.close
+      dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    end,
   },
 })
-
 
 -- lua-language-server root directory detection is kinda funky on windows.
 -- seems that by default, will only find when directory has a .stylua.toml file
@@ -631,7 +700,7 @@ require('lazy').setup({
 if vim.loop.os_uname().sysname == "Windows_NT" then
   local configpath = vim.fn.stdpath 'config' .. '/.stylua.toml'
   if not vim.loop.fs_stat(configpath) then
-   os.execute('type nul > ' .. configpath)
+    os.execute('type nul > ' .. configpath)
   end
 end
 
