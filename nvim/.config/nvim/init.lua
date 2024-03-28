@@ -82,6 +82,10 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 vim.opt.colorcolumn = "80"
 
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -146,12 +150,14 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
 require('lazy').setup({
-
-  -- nvim-tree
   {
     -- File Tree.
     "nvim-tree/nvim-tree.lua",
-    lazy = false,
+    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    keys = {
+      { "<C-n>",     "<cmd> NvimTreeToggle <CR>", desc = "Toggle NvimTree" },
+      { "<leader>e", "<cmd> NvimTreeFocus <CR>",  desc = "Focus NvimTree" }
+    },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
@@ -168,18 +174,15 @@ require('lazy').setup({
         enable = true,
       },
     },
-
-    config = function(_, opts)
-      require('nvim-tree').setup(opts)
-
-      vim.keymap.set('n', '<C-n>', '<cmd> NvimTreeToggle <CR>', {desc = 'Toggle Nvim-Tree'})
-      vim.keymap.set('n', '<leader>e', '<cmd> NvimTreeFocus <CR>', {desc = "[E] Focus Nvim-Tree"})
-    end,
   },
-
   {
     -- Bufferline/tabline
     "akinsho/bufferline.nvim",
+    event = "VeryLazy",
+    keys = {
+      { "<S-l>", "<cmd>BufferLineCycleNext<CR>", desc = "Next Buffer" },
+      { "<S-h>", "<cmd>BufferLineCyclePrev<CR>", desc = "Prev Buffer" },
+    },
     opts = {
       options = {
         offsets = {
@@ -195,37 +198,22 @@ require('lazy').setup({
         end,
       },
     },
-    config = function(_, opts)
-      require('bufferline').setup(opts)
-
-      vim.keymap.set('n', '<S-l>', '<cmd>BufferLineCycleNext<CR>')
-      vim.keymap.set('n', '<S-h>', '<cmd>BufferLineCyclePrev<CR>')
-    end,
   },
-
-  {
-    'famiu/bufdelete.nvim',
-    keys = {
-      { "Q", "<cmd> Bdelete! <CR>", desc = "[Q] Close Buffer" }
-    },
-  },
-
   {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
   },
-
-
   {
     -- comment visual regions/lines
     'numToStr/Comment.nvim',
-    opts = {},
+    opts = true,
   },
 
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     -- See `:help gitsigns` to understand what the configuration keys do
     'lewis6991/gitsigns.nvim',
+    event = "BufEnter",
     opts = {
       signs = {
         add = { text = '+' },
@@ -284,13 +272,10 @@ require('lazy').setup({
   {
     -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
-    branch = '0.1.x',
+    event = 'VeryLazy',
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
       { 'nvim-telescope/telescope-ui-select.nvim' },
-
-      -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons' },
     },
     config = function()
@@ -351,19 +336,21 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    event = "VeryLazy",
     dependencies = {
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      'j-hui/fidget.nvim',
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      'folke/neodev.nvim',
 
       -- Let's try Mason again. Won't work on Android, but whatever.
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'folke/trouble.nvim',
     },
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -419,6 +406,17 @@ require('lazy').setup({
             },
           },
         },
+        pyright = {
+          settings = {
+            python = {
+              analysis = {
+                diagnosticSeverityOverrides = {
+                  reportUnusedExpression = "none",
+                }
+              }
+            }
+          }
+        }
       }
 
       require('mason').setup()
@@ -447,6 +445,7 @@ require('lazy').setup({
 
         setup_server('lua_ls')
         setup_server('clangd')
+        setup_server('pyright')
       end
     end,
   },
@@ -539,6 +538,7 @@ require('lazy').setup({
 
   {
     'folke/trouble.nvim',
+    lazy = true,
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {
     },
@@ -561,10 +561,15 @@ require('lazy').setup({
     'echasnovski/mini.nvim',
     config = function()
       -- Around/Inside
-      require('mini.ai').setup { n_lines = 500 }
+      require('mini.ai').setup {
+        n_lines = 500,
+      }
 
       -- Surround
       require('mini.surround').setup()
+
+      require('mini.bufremove').setup()
+      vim.keymap.set("n", "Q", function() require('mini.bufremove').delete() end, { desc = "Delete Buffer" })
 
       local statusline = require 'mini.statusline'
       statusline.setup({ use_icons = true })
@@ -609,28 +614,36 @@ require('lazy').setup({
 
   {
     'akinsho/toggleterm.nvim',
-    opts = {
-
+    cmd = "ToggleTerm",
+    keys = {
+      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = { "Toggle Terminal" }, mode = "n" },
+      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = { "Toggle Terminal" }, mode = "t" },
     },
     config = function(_, opts)
       require('toggleterm').setup(opts)
 
-      local Terminal  = require('toggleterm.terminal').Terminal
-      local lazygit = Terminal:new({ cmd = "lazygit", hidden = true, direction = 'float' })
+      local Terminal = require('toggleterm.terminal').Terminal
+      local lazygit  = Terminal:new({ cmd = "lazygit", hidden = true, direction = 'float' })
 
       local function _lazygit_toggle()
         lazygit:toggle()
       end
 
-      vim.keymap.set("n", "<leader>gs", _lazygit_toggle, {noremap = true, silent = true, desc = '[G]it [S]tatus'})
-
-      vim.keymap.set('n', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', { silent = true, desc = '[T]oggle [T]erm' })
-      vim.keymap.set('t', '<A-i>', '<cmd>ToggleTerm direction=float<CR>', { silent = true, desc = '[T]oggle [T]erm' })
+      vim.keymap.set("n", "<leader>gs", _lazygit_toggle, { noremap = true, silent = true, desc = '[G]it [S]tatus' })
     end,
   },
 
   {
     'mfussenegger/nvim-dap',
+    keys = {
+      { "<F5>",      function() require('dap').continue() end,                                               desc = "Debug: Start/Continue" },
+      { "<F1>",      function() require('dap').step_into() end,                                              desc = "Debug: Step Into" },
+      { "<F2>",      function() require('dap').step_over() end,                                              desc = "Debug: Step Over" },
+      { "<F3>",      function() require('dap').step_out() end,                                               desc = "Debug: Step Out" },
+      { "<leader>b", function() require('dap').toggle_breakpoint() end,                                      desc = "Debug: Toggle Breakpoint" },
+      { "<leader>B", function() require('dap').toggle_breakpoint(vim.fn.input 'Breakpoint Condition: ') end, desc = "Debug: Set Breakpoint" },
+      { "<F7>",      function() require('dapui').toggle() end,                                               desc = "Debug: Toggle UI" }
+    },
     dependencies = {
       'rcarriga/nvim-dap-ui',
       'williamboman/mason.nvim',
@@ -646,14 +659,6 @@ require('lazy').setup({
 
         handlers = {},
       }
-
-      vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug: Start/Continue' })
-      vim.keymap.set('n', '<F1>', dap.step_into, { desc = 'Debug: Step Into' })
-      vim.keymap.set('n', '<F2>', dap.step_over, { desc = 'Debug: Step Over' })
-      vim.keymap.set('n', '<F3>', dap.step_out, { desc = 'Debug: Step Out' })
-      vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-      vim.keymap.set('n', '<leader>B', function() dap.set_breakpoint(vim.fn.input 'Breakpoint Condition: ') end,
-        { desc = 'Debug: Set Breakpoint' })
 
       dapui.setup {
         layouts = { {
@@ -685,13 +690,51 @@ require('lazy').setup({
         } },
       }
 
-      vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
-
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close
       dap.listeners.before.event_exited['dapui_config'] = dapui.close
     end,
   },
+  {
+    "GCBallesteros/NotebookNavigator.nvim",
+    dependencies = {
+      {
+        "GCBallesteros/jupytext.nvim",
+        lazy = false,
+        opts = {
+          style = "percent",
+          output_extension = "py"
+        },
+      },
+      {
+        "benlubas/molten-nvim",
+      },
+      "echasnovski/mini.nvim",
+    },
+    ft = "python",
+    config = function()
+      local nn = require "notebook-navigator"
+      nn.setup({
+        repl_provider = "molten",
+        syntax_highlight = true,
+        cell_highlight_group = "Folded",
+      })
+
+      require("mini.hipatterns").setup({
+        highlighters = { cells = nn.minihipatterns_spec }
+      })
+      require("mini.ai").setup({
+        n_lines = 500,
+        custom_textobjects = { h = nn.miniai_spec }
+      })
+    end,
+    keys = {
+      { "]h",        function() require('notebook-navigator').move_cell('d') end },
+      { "[h",        function() require('notebook-navigator').move_cell('u') end },
+      { "<leader>X", function() require('notebook-navigator').run_cell() end },
+      { "<leader>x", function() require('notebook-navigator').run_and_move() end },
+    },
+  }
 })
 
 -- lua-language-server root directory detection is kinda funky on windows.
