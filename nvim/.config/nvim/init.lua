@@ -80,7 +80,6 @@ vim.opt.sidescroll = 8
 vim.opt.wrap = false
 vim.opt.incsearch = true
 vim.opt.termguicolors = true
-vim.opt.colorcolumn = "80"
 
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
@@ -176,37 +175,13 @@ require('lazy').setup({
     },
   },
   {
-    -- Bufferline/tabline
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<S-l>", "<cmd>BufferLineCycleNext<CR>", desc = "Next Buffer" },
-      { "<S-h>", "<cmd>BufferLineCyclePrev<CR>", desc = "Prev Buffer" },
-    },
-    opts = {
-      options = {
-        offsets = {
-          {
-            filetype = "NvimTree",
-            text = "",
-            separator = true,
-          }
-        },
-        ---@diagnostic disable-next-line unused-local
-        custom_filter = function(buf_number, buf_numbers)
-          if vim.bo[buf_number].filetype ~= "NvimTree" then return true end
-        end,
-      },
-    },
-  },
-  {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
   },
   {
     -- comment visual regions/lines
     'numToStr/Comment.nvim',
-    opts = true,
+    opts = {},
   },
 
   {
@@ -272,7 +247,24 @@ require('lazy').setup({
   {
     -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VeryLazy',
+    cmd = "Telescope",
+    keys = {
+      {'<leader>sh', '<cmd>Telescope help_tags<CR>', desc = "[S]earch [H]elp"},
+      {'<leader>sk', '<cmd>Telescope keymaps<CR>', desc = "[S]earch [K]eymaps"},
+      {'<leader>sf', '<cmd>Telescope find_files<CR>', desc = "[S]earch [F]iles"},
+      {'<leader>st', '<cmd>Telescope builtin<CR>', desc = "[S]earch [T]elescopes"},
+      {'<leader>sw', '<cmd>Telescope grep_string<CR>', desc = "[S]earch [W]ord"},
+      {'<leader>sg', '<cmd>Telescope live_grep<CR>', desc = "[S]earch by [G]rep"},
+      {'<leader>sd', '<cmd>Telescope diagnostics<CR>', desc = "[S]earch [D]iagnostics"},
+      {'<leader>sr', '<cmd>Telescope resume<CR>', desc = "[S]earch [R]esume"},
+      {'<leader>s.', '<cmd>Telescope oldfiles<CR>', desc = "[S]earch Recents [.]"},
+      {'<leader>sc', '<cmd>Telescope git_status<CR>', desc = "[S]earch [C]ommits"},
+      {'<leader><leader>', '<cmd>Telescope buffers<CR>', desc = "[ ] Find Buffers"},
+      {'<leader>sb', '<cmd>Telescope buffers<CR>', desc = "[S]earch [B]uffers"},
+      {'<leader>/', function() require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({previewer=false})) end, desc = "[/] Fuzzy search in current buffer"},
+      {'<leader>s/', function() require('telescope.builtin').live_grep({grep_open_files = true, prompt_title="Live Grep in Open Files"}) end, desc = "[S]earch [/] in open files"},
+      {'<leader>sn', function() require('telescope.builtin').find_files({cwd = vim.fn.stdpath 'config'}) end, desc = "[S]earch [N]vim Config"},
+    },
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
       { 'nvim-telescope/telescope-ui-select.nvim' },
@@ -293,63 +285,29 @@ require('lazy').setup({
           },
         },
       }
-
       -- Enable telescope extensions, if they are installed
       pcall(require('telescope').load_extension, 'ui-select')
-
-      -- See `:help telescope.builtin`
-      local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader>sc', builtin.git_status, { desc = '[S]earch [C]ommits' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = '[S]earch [B]uffers' })
-
-      -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
-
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
-
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
     end,
   },
 
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    event = "VeryLazy",
+    event = {"BufReadPost", "BufNewFile"},
+    cmd = {"LspInfo", "LspLog", "LspStart", "LspRestart"},
     dependencies = {
 
       -- Useful status updates for LSP.
-      'j-hui/fidget.nvim',
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      'folke/neodev.nvim',
+      { 'folke/neodev.nvim', opts = {} },
 
       -- Let's try Mason again. Won't work on Android, but whatever.
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      { 'williamboman/mason.nvim', enabled = not vim.g.ANDROID },
+      { 'williamboman/mason-lspconfig.nvim', enabled = not vim.g.ANDROID },
+      { 'WhoIsSethDaniel/mason-tool-installer.nvim', enabled = not vim.g.ANDROID },
       'folke/trouble.nvim',
     },
     config = function()
@@ -419,11 +377,11 @@ require('lazy').setup({
         }
       }
 
-      require('mason').setup()
-      local ensure_installed = vim.tbl_keys(servers or {})
 
 
       if not vim.g.ANDROID then -- Check if works on NixOS with nix-ld and nix-alien
+        require('mason').setup()
+        local ensure_installed = vim.tbl_keys(servers or {})
         require('mason-tool-installer').setup { ensure_installed = ensure_installed }
         require('mason-lspconfig').setup {
           handlers = {
@@ -517,10 +475,12 @@ require('lazy').setup({
     -- Colorscheme
     'folke/tokyonight.nvim',
     priority = 1000,
-    init = function()
+    config = function(_, opts)
+      require('tokyonight').setup(opts)
       vim.cmd.colorscheme 'tokyonight-night'
     end,
     opts = {
+      transparent = true,
       styles = {
         comments = { italic = false },
         keywords = { italic = false },
@@ -616,8 +576,8 @@ require('lazy').setup({
     'akinsho/toggleterm.nvim',
     cmd = "ToggleTerm",
     keys = {
-      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = { "Toggle Terminal" }, mode = "n" },
-      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = { "Toggle Terminal" }, mode = "t" },
+      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle Terminal", mode = "n" },
+      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle Terminal", mode = "t" },
     },
     config = function(_, opts)
       require('toggleterm').setup(opts)
