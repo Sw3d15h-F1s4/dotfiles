@@ -151,37 +151,27 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   {
     -- File Tree.
-    "nvim-tree/nvim-tree.lua",
-    cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+    "nvim-neo-tree/neo-tree.nvim",
     keys = {
-      { "<C-n>",     "<cmd> NvimTreeToggle <CR>", desc = "Toggle NvimTree" },
-      { "<leader>e", "<cmd> NvimTreeFocus <CR>",  desc = "Focus NvimTree" }
+      { "<C-n>",     "<cmd> Neotree toggle <CR>", desc = "Toggle [N]eotree" },
+      { "<leader>e", "<cmd> Neotree focus source=filesystem<CR>",  desc = "[E]xplore Files" },
+      { "<leader>gs", "<cmd> Neotree focus source=git_status<CR>",  desc = "[G]it [S]tatus" },
+      { "<leader><leader>", "<cmd> Neotree focus source=buffers<CR>",  desc = "[ ] Show Buffers" },
     },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
     },
     opts = {
-      disable_netrw = true,
-      hijack_netrw = true,
-      hijack_cursor = true,
-      sync_root_with_cwd = true,
-      git = {
-        enable = true,
-        ignore = true,
+      window = {
+        width = 30,
       },
-      filesystem_watchers = {
-        enable = true,
-      },
+      source_selector = {
+        winbar = true
+      }
     },
-  },
-  {
-    -- Detect tabstop and shiftwidth automatically
-    'tpope/vim-sleuth',
-  },
-  {
-    -- comment visual regions/lines
-    'numToStr/Comment.nvim',
-    opts = {},
+    config = true,
   },
 
   {
@@ -259,8 +249,6 @@ require('lazy').setup({
       {'<leader>sr', '<cmd>Telescope resume<CR>', desc = "[S]earch [R]esume"},
       {'<leader>s.', '<cmd>Telescope oldfiles<CR>', desc = "[S]earch Recents [.]"},
       {'<leader>sc', '<cmd>Telescope git_status<CR>', desc = "[S]earch [C]ommits"},
-      {'<leader><leader>', '<cmd>Telescope buffers<CR>', desc = "[ ] Find Buffers"},
-      {'<leader>sb', '<cmd>Telescope buffers<CR>', desc = "[S]earch [B]uffers"},
       {'<leader>/', function() require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({previewer=false})) end, desc = "[/] Fuzzy search in current buffer"},
       {'<leader>s/', function() require('telescope.builtin').live_grep({grep_open_files = true, prompt_title="Live Grep in Open Files"}) end, desc = "[S]earch [/] in open files"},
       {'<leader>sn', function() require('telescope.builtin').find_files({cwd = vim.fn.stdpath 'config'}) end, desc = "[S]earch [N]vim Config"},
@@ -298,16 +286,15 @@ require('lazy').setup({
     dependencies = {
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim', config = true },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', opts = {} },
+      { 'folke/neodev.nvim', config = true },
 
       -- Let's try Mason again. Won't work on Android, but whatever.
       { 'williamboman/mason.nvim', enabled = not vim.g.ANDROID },
       { 'williamboman/mason-lspconfig.nvim', enabled = not vim.g.ANDROID },
-      { 'WhoIsSethDaniel/mason-tool-installer.nvim', enabled = not vim.g.ANDROID },
       'folke/trouble.nvim',
     },
     config = function()
@@ -381,8 +368,6 @@ require('lazy').setup({
 
       if not vim.g.ANDROID then -- Check if works on NixOS with nix-ld and nix-alien
         require('mason').setup()
-        local ensure_installed = vim.tbl_keys(servers or {})
-        require('mason-tool-installer').setup { ensure_installed = ensure_installed }
         require('mason-lspconfig').setup {
           handlers = {
             function(server_name)
@@ -480,7 +465,6 @@ require('lazy').setup({
       vim.cmd.colorscheme 'tokyonight-night'
     end,
     opts = {
-      transparent = true,
       styles = {
         comments = { italic = false },
         keywords = { italic = false },
@@ -491,7 +475,7 @@ require('lazy').setup({
   {
     -- Highlight todo, notes, etc in comments
     'folke/todo-comments.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false }
   },
@@ -515,6 +499,13 @@ require('lazy').setup({
         { silent = true, desc = "[G]oto [R]eferences" })
     end,
   },
+  {
+    "folke/flash.nvim",
+    config = true,
+    keys = {
+      {"S", function() require('flash').jump() end, desc = "Flash"},
+    }
+  },
 
   {
     -- Collection of various small independent plugins/modules
@@ -528,8 +519,12 @@ require('lazy').setup({
       -- Surround
       require('mini.surround').setup()
 
+      require('mini.comment').setup()
+
       require('mini.bufremove').setup()
       vim.keymap.set("n", "Q", function() require('mini.bufremove').delete() end, { desc = "Delete Buffer" })
+
+      require('mini.pairs').setup()
 
       local statusline = require 'mini.statusline'
       statusline.setup({ use_icons = true })
@@ -544,6 +539,10 @@ require('lazy').setup({
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-context",
+      "JoosepAlviste/nvim-ts-context-commentstring",
+    },
     build = ':TSUpdate',
     opts = {
       ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
@@ -592,9 +591,20 @@ require('lazy').setup({
       vim.keymap.set("n", "<leader>gs", _lazygit_toggle, { noremap = true, silent = true, desc = '[G]it [S]tatus' })
     end,
   },
-
+  {
+    "stevearc/dressing.nvim",
+    config = true,
+  },
+  {
+    "nvim-pack/nvim-spectre",
+    config = true,
+    keys = {
+      { "<leader>S", function() require('spectre').open() end, desc = "Spectre [S]earch"},
+    }
+  },
   {
     'mfussenegger/nvim-dap',
+    enabled = not vim.g.ANDROID,
     keys = {
       { "<F5>",      function() require('dap').continue() end,                                               desc = "Debug: Start/Continue" },
       { "<F1>",      function() require('dap').step_into() end,                                              desc = "Debug: Step Into" },
