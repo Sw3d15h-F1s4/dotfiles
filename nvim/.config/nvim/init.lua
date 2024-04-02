@@ -506,36 +506,47 @@ require('lazy').setup({
       {"S", function() require('flash').jump() end, desc = "Flash"},
     }
   },
-
   {
-    -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Around/Inside
-      require('mini.ai').setup {
-        n_lines = 500,
-      }
-
-      -- Surround
-      require('mini.surround').setup()
-
-      require('mini.comment').setup()
-
-      require('mini.bufremove').setup()
-      vim.keymap.set("n", "Q", function() require('mini.bufremove').delete() end, { desc = "Delete Buffer" })
-
-      require('mini.pairs').setup()
-
-      local statusline = require 'mini.statusline'
-      statusline.setup({ use_icons = true })
-
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-    end,
+    -- Adds new a/i textobjects
+    'echasnovski/mini.ai',
+    opts = { n_lines = 500 },
+    event = "InsertEnter",
+    config = true,
   },
-
+  {
+    -- Adds the ability to surround text
+    'echasnovski/mini.surround',
+    event = "InsertEnter",
+    config = true,
+  },
+  {
+    -- Toggle comments in visual mode
+    'echasnovski/mini.comment',
+    config = true,
+    keys = {
+      {"gc", desc = "Toggle Comment"}
+    },
+  },
+  {
+    -- Close buffers like a normal person
+    'echasnovski/mini.bufremove',
+    config = true,
+    keys = {
+      {"Q", function() require('mini.bufremove').delete() end, desc = "Delete Buffer"}
+    }
+  },
+  {
+    -- Autopairs (sorry teej)
+    'echasnovski/mini.pairs',
+    event = "InsertEnter",
+    config = true,
+  },
+  {
+    -- we like me some status lines
+    'echasnovski/mini.statusline',
+    opts = { use_icons = true },
+    config = true,
+  },
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
