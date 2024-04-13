@@ -156,10 +156,9 @@ require('lazy').setup({
     -- File Tree.
     "nvim-neo-tree/neo-tree.nvim",
     keys = {
-      { "<C-n>",     "<cmd> Neotree toggle <CR>", desc = "Toggle [N]eotree" },
-      { "<leader>e", "<cmd> Neotree focus source=filesystem<CR>",  desc = "[E]xplore Files" },
-      { "<leader>gs", "<cmd> Neotree focus source=git_status<CR>",  desc = "[G]it [S]tatus" },
-      { "<leader><leader>", "<cmd> Neotree focus source=buffers<CR>",  desc = "[ ] Show Buffers" },
+      { "<C-n>",      "<cmd> Neotree toggle <CR>",                 desc = "Toggle [N]eotree" },
+      { "<leader>e",  "<cmd> Neotree focus source=filesystem<CR>", desc = "[E]xplore Files" },
+      { "<leader>gs", "<cmd> Neotree focus source=git_status<CR>", desc = "[G]it [S]tatus" },
     },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -242,19 +241,44 @@ require('lazy').setup({
     'nvim-telescope/telescope.nvim',
     cmd = "Telescope",
     keys = {
-      {'<leader>sh', '<cmd>Telescope help_tags<CR>', desc = "[S]earch [H]elp"},
-      {'<leader>sk', '<cmd>Telescope keymaps<CR>', desc = "[S]earch [K]eymaps"},
-      {'<leader>sf', '<cmd>Telescope find_files<CR>', desc = "[S]earch [F]iles"},
-      {'<leader>st', '<cmd>Telescope builtin<CR>', desc = "[S]earch [T]elescopes"},
-      {'<leader>sw', '<cmd>Telescope grep_string<CR>', desc = "[S]earch [W]ord"},
-      {'<leader>sg', '<cmd>Telescope live_grep<CR>', desc = "[S]earch by [G]rep"},
-      {'<leader>sd', '<cmd>Telescope diagnostics<CR>', desc = "[S]earch [D]iagnostics"},
-      {'<leader>sr', '<cmd>Telescope resume<CR>', desc = "[S]earch [R]esume"},
-      {'<leader>s.', '<cmd>Telescope oldfiles<CR>', desc = "[S]earch Recents [.]"},
-      {'<leader>sc', '<cmd>Telescope git_status<CR>', desc = "[S]earch [C]ommits"},
-      {'<leader>/', function() require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({previewer=false})) end, desc = "[/] Fuzzy search in current buffer"},
-      {'<leader>s/', function() require('telescope.builtin').live_grep({grep_open_files = true, prompt_title="Live Grep in Open Files"}) end, desc = "[S]earch [/] in open files"},
-      {'<leader>sn', function() require('telescope.builtin').find_files({cwd = vim.fn.stdpath 'config'}) end, desc = "[S]earch [N]vim Config"},
+      { '<leader>sh', '<cmd>Telescope help_tags<CR>',   desc = "[S]earch [H]elp" },
+      { '<leader>sk', '<cmd>Telescope keymaps<CR>',     desc = "[S]earch [K]eymaps" },
+      { '<leader>sf', '<cmd>Telescope find_files<CR>',  desc = "[S]earch [F]iles" },
+      { '<leader>st', '<cmd>Telescope builtin<CR>',     desc = "[S]earch [T]elescopes" },
+      { '<leader>sw', '<cmd>Telescope grep_string<CR>', desc = "[S]earch [W]ord" },
+      { '<leader>sg', '<cmd>Telescope live_grep<CR>',   desc = "[S]earch by [G]rep" },
+      { '<leader>sd', '<cmd>Telescope diagnostics<CR>', desc = "[S]earch [D]iagnostics" },
+      { '<leader>sr', '<cmd>Telescope resume<CR>',      desc = "[S]earch [R]esume" },
+      { '<leader>s.', '<cmd>Telescope oldfiles<CR>',    desc = "[S]earch Recents [.]" },
+      { '<leader>sc', '<cmd>Telescope git_status<CR>',  desc = "[S]earch [C]ommits" },
+      {
+        '<leader><leader>',
+        function()
+          require('telescope.builtin').buffers(require('telescope.themes')
+            .get_dropdown({ previewer = false }))
+        end,
+        desc = "[ ] Find Buffers"
+      },
+      {
+        '<leader>/',
+        function()
+          require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes')
+            .get_dropdown({ previewer = false }))
+        end,
+        desc = "[/] Fuzzy search in current buffer"
+      },
+      {
+        '<leader>s/',
+        function()
+          require('telescope.builtin').live_grep({
+            grep_open_files = true,
+            prompt_title =
+            "Live Grep in Open Files"
+          })
+        end,
+        desc = "[S]earch [/] in open files"
+      },
+      { '<leader>sn', function() require('telescope.builtin').find_files({ cwd = vim.fn.stdpath 'config' }) end, desc = "[S]earch [N]vim Config" },
     },
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
@@ -284,19 +308,19 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
-    event = {"BufReadPost", "BufNewFile"},
-    cmd = {"LspInfo", "LspLog", "LspStart", "LspRestart"},
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "LspInfo", "LspLog", "LspStart", "LspRestart" },
     dependencies = {
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', config = true },
+      { 'j-hui/fidget.nvim',                 config = true },
 
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
-      { 'folke/neodev.nvim', config = true },
+      { 'folke/neodev.nvim',                 config = true },
 
       -- Let's try Mason again. Won't work on Android, but whatever.
-      { 'williamboman/mason.nvim', enabled = not vim.g.ANDROID },
+      { 'williamboman/mason.nvim',           enabled = not vim.g.ANDROID },
       { 'williamboman/mason-lspconfig.nvim', enabled = not vim.g.ANDROID },
       'folke/trouble.nvim',
     },
@@ -502,11 +526,44 @@ require('lazy').setup({
         { silent = true, desc = "[G]oto [R]eferences" })
     end,
   },
+
+  {
+    "jbyuki/nabla.nvim",
+    keys = {
+      { "<leader>p",  function() require('nabla').popup() end,       desc = "[P] Popup LaTeX Eqns" },
+      { "<leader>dp", function() require('nabla').toggle_virt() end, desc = "[P] Toggle LaTeX Eqns" },
+    }
+  },
+  {
+    "jbyuki/venn.nvim",
+    config = function()
+      local function toggle_venn()
+        local venn_enabled = vim.inspect(vim.b.venn_enabled)
+        if venn_enabled == "nil" then
+          ---@diagnostic disable-next-line 
+          vim.b.venn_enabled = true
+          vim.cmd [[setlocal ve=all]]
+          vim.api.nvim_buf_set_keymap(0, "n", "J", "<C-v>j:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "n", "K", "<C-v>k:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "n", "L", "<C-v>l:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "n", "H", "<C-v>h:VBox<CR>", { noremap = true })
+          vim.api.nvim_buf_set_keymap(0, "v", "f", ":VBox<CR>", { noremap = true })
+        else
+          vim.cmd [[setlocal ve=]]
+          vim.cmd [[mapclear <buffer>]]
+          ---@diagnostic disable-next-line 
+          vim.b.venn_enabled = nil
+        end
+      end
+      vim.keymap.set("n", "<leader>v", function() toggle_venn() end, { desc = "Toggle Venn" })
+    end,
+  },
+
   {
     "folke/flash.nvim",
     config = true,
     keys = {
-      {"S", function() require('flash').jump() end, desc = "Flash"},
+      { "S", function() require('flash').jump() end, desc = "Flash" },
     }
   },
   {
@@ -527,7 +584,7 @@ require('lazy').setup({
     'echasnovski/mini.comment',
     config = true,
     keys = {
-      {"gc", desc = "Toggle Comment"}
+      { "gc", desc = "Toggle Comment" }
     },
   },
   {
@@ -535,7 +592,7 @@ require('lazy').setup({
     'echasnovski/mini.bufremove',
     config = true,
     keys = {
-      {"Q", function() require('mini.bufremove').delete() end, desc = "Delete Buffer"}
+      { "Q", function() require('mini.bufremove').delete() end, desc = "Delete Buffer" }
     }
   },
   {
@@ -588,8 +645,9 @@ require('lazy').setup({
     'akinsho/toggleterm.nvim',
     cmd = "ToggleTerm",
     keys = {
-      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle Terminal", mode = "n" },
-      { "<A-i>", "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle Terminal", mode = "t" },
+      { "<A-i>",      "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle Terminal", mode = "n" },
+      { "<A-i>",      "<cmd>ToggleTerm direction=float<CR>", desc = "Toggle Terminal", mode = "t" },
+      { "<leader>gs", desc = "Toggle Terminal" },
     },
     config = function(_, opts)
       require('toggleterm').setup(opts)
@@ -612,7 +670,7 @@ require('lazy').setup({
     "nvim-pack/nvim-spectre",
     config = true,
     keys = {
-      { "<leader>S", function() require('spectre').open() end, desc = "Spectre [S]earch"},
+      { "<leader>S", function() require('spectre').open() end, desc = "Spectre [S]earch" },
     }
   },
   {
@@ -691,25 +749,26 @@ require('lazy').setup({
       },
       {
         "benlubas/molten-nvim",
+        build = ":UpdateRemotePlugins",
       },
-      "echasnovski/mini.nvim",
+      {
+        "echasnovski/mini.hipatterns",
+      },
+      {
+        "echasnovski/mini.ai",
+      },
     },
     ft = "python",
-    config = function()
-      local nn = require "notebook-navigator"
-      nn.setup({
-        repl_provider = "molten",
-        syntax_highlight = true,
-        cell_highlight_group = "Folded",
-      })
-
-      require("mini.hipatterns").setup({
-        highlighters = { cells = nn.minihipatterns_spec }
-      })
-      require("mini.ai").setup({
-        n_lines = 500,
-        custom_textobjects = { h = nn.miniai_spec }
-      })
+    opts = {
+      repl_provider = "molten",
+      syntax_highlight = true,
+      cell_highlight_group = "Folded",
+    },
+    config = function(_, opts)
+      local nn = require 'notebook-navigator'
+      nn.setup(opts)
+      require('mini.hipatterns').setup({ highlighters = { cells = nn.minihipatterns_spec } })
+      require('mini.ai').setup({ textobjects = { h = nn.miniai_spec } })
     end,
     keys = {
       { "]h",        function() require('notebook-navigator').move_cell('d') end },
@@ -717,6 +776,10 @@ require('lazy').setup({
       { "<leader>X", function() require('notebook-navigator').run_cell() end },
       { "<leader>x", function() require('notebook-navigator').run_and_move() end },
     },
+  },
+  {
+    cmd = "CellularAutomaton",
+    "Eandrju/cellular-automaton.nvim",
   }
 })
 
