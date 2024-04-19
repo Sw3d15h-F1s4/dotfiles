@@ -539,6 +539,10 @@ require('lazy').setup({
   },
   {
     "jbyuki/venn.nvim",
+    cmd = "VBox",
+    keys = {
+      {'<leader>p', desc = "Toggle Venn"},
+    },
     config = function()
       local function toggle_venn()
         local venn_enabled = vim.inspect(vim.b.venn_enabled)
