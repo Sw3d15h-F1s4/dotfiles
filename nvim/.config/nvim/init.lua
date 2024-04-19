@@ -219,6 +219,8 @@ require('lazy').setup({
   },
 
   {                     -- Useful plugin to show you pending keybinds.
+    -- NOTE: im too lazy to use mini.clue properly. also this works with ciq
+    -- maybe, maybe i spend some time documenting all my keybinds
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     config = function()
@@ -421,6 +423,7 @@ require('lazy').setup({
   },
 
   {
+    -- FIX: looks like nvim-cmp is more performant than mini.completion sadly.
     -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
