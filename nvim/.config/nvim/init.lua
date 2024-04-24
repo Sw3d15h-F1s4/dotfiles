@@ -154,6 +154,7 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   {
     -- File Tree.
+    -- TODO: find a new one neotree kinda ass
     "nvim-neo-tree/neo-tree.nvim",
     keys = {
       { "<C-n>",      "<cmd> Neotree toggle <CR>",                 desc = "Toggle [N]eotree" },
@@ -314,9 +315,6 @@ require('lazy').setup({
     cmd = { "LspInfo", "LspLog", "LspStart", "LspRestart" },
     dependencies = {
 
-      -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim',                 config = true },
-
       -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
       -- used for completion, annotations and signatures of Neovim apis
       { 'folke/neodev.nvim',                 config = true },
@@ -390,6 +388,23 @@ require('lazy').setup({
               }
             }
           }
+        },
+        texlab = {
+          settings = {
+            texlab = {
+              build = {
+                executable = "tectonic",
+                args = {
+                  "-X",
+                  "compile",
+                  "%f",
+                  [[--synctex]],
+                  [[--keep-logs]],
+                  [[--keep-intermediates]],
+                }
+              }
+            }
+          }
         }
       }
 
@@ -414,10 +429,7 @@ require('lazy').setup({
           server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
           require('lspconfig')[server_name].setup(server)
         end
-
-        setup_server('lua_ls')
-        setup_server('clangd')
-        setup_server('pyright')
+        vim.tbl_map(setup_server, vim.tbl_keys(servers))
       end
     end,
   },
@@ -541,7 +553,7 @@ require('lazy').setup({
     "jbyuki/venn.nvim",
     cmd = "VBox",
     keys = {
-      {'<leader>p', desc = "Toggle Venn"},
+      {'<leader>v', desc = "Toggle Venn"},
     },
     config = function()
       local function toggle_venn()
@@ -591,7 +603,8 @@ require('lazy').setup({
     'echasnovski/mini.comment',
     config = true,
     keys = {
-      { "gc", desc = "Toggle Comment" }
+      { "gc", desc = "Toggle Comment", mode = "n" },
+      { "gc", desc = "Toggle Comment", mode = "v" },
     },
   },
   {
