@@ -155,24 +155,15 @@ require('lazy').setup({
   {
     -- File Tree.
     -- TODO: find a new one neotree kinda ass
-    "nvim-neo-tree/neo-tree.nvim",
+    "nvim-tree/nvim-tree.lua",
     keys = {
-      { "<C-n>",      "<cmd> Neotree toggle <CR>",                 desc = "Toggle [N]eotree" },
-      { "<leader>e",  "<cmd> Neotree focus source=filesystem<CR>", desc = "[E]xplore Files" },
-      { "<leader>gs", "<cmd> Neotree focus source=git_status<CR>", desc = "[G]it [S]tatus" },
+      { "<C-n>",      "<cmd>NvimTreeToggle<CR>",                 desc = "Toggle [N]eotree" },
+      { "<leader>e",  "<cmd>NvimTreeFocus<CR>", desc = "[E]xplore Files" },
     },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
     },
     opts = {
-      window = {
-        width = 30,
-      },
-      source_selector = {
-        winbar = true
-      }
     },
     config = true,
   },
@@ -507,6 +498,8 @@ require('lazy').setup({
       vim.cmd.colorscheme 'tokyonight-night'
     end,
     opts = {
+      style = "night",
+      transparent = true,
       styles = {
         comments = { italic = false },
         keywords = { italic = false },
