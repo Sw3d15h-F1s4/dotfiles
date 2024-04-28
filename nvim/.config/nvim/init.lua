@@ -13,7 +13,7 @@ vim.g.loaded_ruby_provider = 0
 -- See `:help vim.opt`
 
 -- Make line numbers default
-vim.opt.number = true
+-- vim.opt.number = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -88,6 +88,8 @@ vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 
+vim.opt.fillchars = 'eob: '
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -124,7 +126,6 @@ vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { silent = true })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { silent = true })
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
-vim.keymap.set('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 
 -- [[ Basic Autocommands ]]
