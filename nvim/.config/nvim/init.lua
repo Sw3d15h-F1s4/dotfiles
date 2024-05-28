@@ -158,7 +158,7 @@ require('lazy').setup({
     -- TODO: find a new one neotree kinda ass
     "nvim-tree/nvim-tree.lua",
     keys = {
-      { "<C-n>",      "<cmd>NvimTreeToggle<CR>",                 desc = "Toggle [N]eotree" },
+      { "<C-n>",      "<cmd>NvimTreeToggle<CR>",                 desc = "Toggle [N]vim-tree" },
       { "<leader>e",  "<cmd>NvimTreeFocus<CR>", desc = "[E]xplore Files" },
     },
     dependencies = {
@@ -206,7 +206,7 @@ require('lazy').setup({
         map("n", "<leader>gr", require('gitsigns').reset_hunk, "[G]it [R]eset Hunk")
         map("n", "<leader>gp", require('gitsigns').preview_hunk, "[G]it [P]review Hunk")
         map("n", "<leader>gb", package.loaded.gitsigns.blame_line, "[G]it [B]lame")
-        map("n", "<leader>gt", require('gitsigns').toggle_deleted, "[G]it [T]oggle Delted")
+        map("n", "<leader>gt", require('gitsigns').toggle_deleted, "[G]it [T]oggle Deleted")
       end
     },
   },
