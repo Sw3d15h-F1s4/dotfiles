@@ -155,11 +155,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   {
     -- File Tree.
-    -- TODO: find a new one neotree kinda ass
     "nvim-tree/nvim-tree.lua",
     keys = {
-      { "<C-n>",      "<cmd>NvimTreeToggle<CR>",                 desc = "Toggle [N]vim-tree" },
-      { "<leader>e",  "<cmd>NvimTreeFocus<CR>", desc = "[E]xplore Files" },
+      { "<C-n>",     "<cmd>NvimTreeToggle<CR>", desc = "Toggle [N]vim-tree" },
+      { "<leader>e", "<cmd>NvimTreeFocus<CR>",  desc = "[E]xplore Files" },
     },
     dependencies = {
       "nvim-tree/nvim-web-devicons",
@@ -211,24 +210,28 @@ require('lazy').setup({
     },
   },
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     -- NOTE: im too lazy to use mini.clue properly. also this works with ciq
     -- maybe, maybe i spend some time documenting all my keybinds
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function()
-      require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
+    config = true,
+    opts = {
+      spec = {
+        { "<leader>c",  group = "[C]ode" },
+        { "<leader>c_", hidden = true },
+        { "<leader>d",  group = "[D]ocument" },
+        { "<leader>d_", hidden = true },
+        { "<leader>g",  group = "[G]it" },
+        { "<leader>g_", hidden = true },
+        { "<leader>r",  group = "[R]ename" },
+        { "<leader>r_", hidden = true },
+        { "<leader>s",  group = "[S]earch" },
+        { "<leader>s_", hidden = true },
+        { "<leader>w",  group = "[W]orkspace" },
+        { "<leader>w_", hidden = true },
       }
-    end,
+    }
   },
 
   {
@@ -312,7 +315,7 @@ require('lazy').setup({
       { 'folke/neodev.nvim',                 config = true },
 
       -- Let's try Mason again. Won't work on Android, but whatever.
-      { 'williamboman/mason.nvim',           enabled = not vim.g.ANDROID },
+      { 'williamboman/mason.nvim',           config = true,              enabled = not vim.g.ANDROID },
       { 'williamboman/mason-lspconfig.nvim', enabled = not vim.g.ANDROID },
       'folke/trouble.nvim',
     },
@@ -492,6 +495,7 @@ require('lazy').setup({
 
   {
     -- Colorscheme
+    -- TODO: change to rose-pine to match nixos config
     'folke/tokyonight.nvim',
     priority = 1000,
     config = function(_, opts)
@@ -547,13 +551,13 @@ require('lazy').setup({
     "jbyuki/venn.nvim",
     cmd = "VBox",
     keys = {
-      {'<leader>v', desc = "Toggle Venn"},
+      { '<leader>v', desc = "Toggle Venn" },
     },
     config = function()
       local function toggle_venn()
         local venn_enabled = vim.inspect(vim.b.venn_enabled)
         if venn_enabled == "nil" then
-          ---@diagnostic disable-next-line 
+          ---@diagnostic disable-next-line
           vim.b.venn_enabled = true
           vim.cmd [[setlocal ve=all]]
           vim.api.nvim_buf_set_keymap(0, "n", "J", "<C-v>j:VBox<CR>", { noremap = true })
@@ -564,7 +568,7 @@ require('lazy').setup({
         else
           vim.cmd [[setlocal ve=]]
           vim.cmd [[mapclear <buffer>]]
-          ---@diagnostic disable-next-line 
+          ---@diagnostic disable-next-line
           vim.b.venn_enabled = nil
         end
       end
@@ -572,13 +576,6 @@ require('lazy').setup({
     end,
   },
 
-  {
-    "folke/flash.nvim",
-    config = true,
-    keys = {
-      { "S", function() require('flash').jump() end, desc = "Flash" },
-    }
-  },
   {
     -- Adds new a/i textobjects
     'echasnovski/mini.ai',
@@ -672,10 +669,6 @@ require('lazy').setup({
 
       vim.keymap.set("n", "<leader>gs", _lazygit_toggle, { noremap = true, silent = true, desc = '[G]it [S]tatus' })
     end,
-  },
-  {
-    "stevearc/dressing.nvim",
-    config = true,
   },
   {
     "nvim-pack/nvim-spectre",
