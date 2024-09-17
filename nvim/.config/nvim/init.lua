@@ -495,21 +495,19 @@ require('lazy').setup({
 
   {
     -- Colorscheme
-    -- TODO: change to rose-pine to match nixos config
-    'folke/tokyonight.nvim',
+    'rose-pine/neovim',
+    name="rose-pine",
     priority = 1000,
-    config = function(_, opts)
-      require('tokyonight').setup(opts)
-      vim.cmd.colorscheme 'tokyonight-night'
-    end,
     opts = {
-      style = "night",
-      transparent = true,
+      dim_inactive_windows = true,
       styles = {
-        comments = { italic = false },
-        keywords = { italic = false },
-      },
+        italic = false,
+      }
     },
+    config = function(_, opts)
+      require('rose-pine').setup(opts)
+      vim.cmd.colorscheme("rose-pine")
+    end
   },
 
   {
@@ -614,8 +612,9 @@ require('lazy').setup({
   },
   {
     -- we like me some status lines
-    'echasnovski/mini.statusline',
-    opts = { use_icons = true },
+    'nvim-lualine/lualine.nvim',
+    dependencies = {'nvim-tree/nvim-web-devicons'},
+    opts = {},
     config = true,
   },
   {
