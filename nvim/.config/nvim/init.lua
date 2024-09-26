@@ -588,15 +588,6 @@ require('lazy').setup({
     config = true,
   },
   {
-    -- Toggle comments in visual mode
-    'echasnovski/mini.comment',
-    config = true,
-    keys = {
-      { "gc", desc = "Toggle Comment", mode = "n" },
-      { "gc", desc = "Toggle Comment", mode = "v" },
-    },
-  },
-  {
     -- Close buffers like a normal person
     'echasnovski/mini.bufremove',
     config = true,
@@ -614,7 +605,14 @@ require('lazy').setup({
     -- we like me some status lines
     'nvim-lualine/lualine.nvim',
     dependencies = {'nvim-tree/nvim-web-devicons'},
-    opts = {},
+    opts = {
+      extensions = {
+        'nvim-tree',
+        'toggleterm',
+        'trouble',
+        'quickfix',
+      }
+    },
     config = true,
   },
   {
