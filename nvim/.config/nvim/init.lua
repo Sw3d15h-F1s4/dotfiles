@@ -527,10 +527,8 @@ require('lazy').setup({
     config = function(_, opts)
       require('trouble').setup(opts)
 
-      vim.keymap.set('n', '<leader>dd', function() require('trouble').toggle('document_diagnostics') end,
+      vim.keymap.set('n', '<leader>dd', function() require('trouble').toggle('diagnostics') end,
         { silent = true, desc = "[D]ocument [D]iagnostics" })
-      vim.keymap.set('n', '<leader>wd', function() require('trouble').toggle('workspace_diagnostics') end,
-        { silent = true, desc = "[W]orkspace [D]iagnostics" })
       vim.keymap.set('n', '<leader>q', function() require('trouble').toggle('quickfix') end,
         { silent = true, desc = "[Q]uickfix" })
       vim.keymap.set('n', 'gr', function() require('trouble').toggle('lsp_references') end,
@@ -621,7 +619,7 @@ require('lazy').setup({
     build = ':TSUpdate',
     opts = {
       ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
-      auto_install = true,
+      auto_install = false,
       highlight = { enable = true },
       indent = { enable = true },
       incremental_selection = {
